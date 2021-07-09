@@ -16,6 +16,8 @@ import signal
 import sys
 import traceback
 from types import TracebackType
+from datetime import datetime
+from dateutil.tz import tzutc
 from typing import (
     Any,
     AsyncIterator,
@@ -404,6 +406,7 @@ class AbstractAgent(aobject, Generic[KernelObjectType, KernelCreationContextType
                 'images': snappy.compress(msgpack.packb([
                     (repo_tag, digest) for repo_tag, digest in self.images.items()
                 ])),
+                'time': datetime.now(tzutc()).timestamp()
             }
             await self.produce_event(AgentHeartbeatEvent(agent_info))
         except asyncio.TimeoutError:
